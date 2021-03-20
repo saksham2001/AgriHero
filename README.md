@@ -1,5 +1,8 @@
 # AgriHero
 
+*NOTE*
+The Project is still in progress and all the code files are not aviablable on github yet.
+
 ## Project Abstract
 
 Our project idea is to create an application which will act as a hub for the agricultural activities of a region.
