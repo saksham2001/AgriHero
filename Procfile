@@ -1,1 +1,1 @@
-web: gunicorn flaskprojectblog:app
+web: gunicorn applet:app
