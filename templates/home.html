@@ -1,17 +1,53 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="col-xl">
-      {% for i in range(0, posts|length, 1) %}
-        <div class="row flex-nowrap align-items-center">
-          <div class="col">
-            {{ posts[i][2] }}
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Temperature</h4>
+            <p>Value: {{ posts[0][2] }} °C</p>
           </div>
-          {% if i < posts|length %}
-          <div class="col">
-            {{ posts[i][2] }}
-          </div>
-          {% endif %}
         </div>
-      {% endfor %}
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Humidity</h4>
+            <p>Value: {{ posts[1][2] }} %</p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Average Soil Humidity</h4>
+            <p>Value: {{ posts[1][2] }} %</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Rain Probability</h4>
+            <p>Value: {{ posts[2][2] }} %</p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Wind Speed</h4>
+            <p>Value: {{ posts[1][2] }} m/s</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-database"></i>
+            <h4>Camera Analysis</h4>
+            <p>Value: {{ posts[2][2] }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 {% endblock content%}

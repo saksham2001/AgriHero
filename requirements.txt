@@ -15,3 +15,4 @@ Werkzeug
 WTForms
 gunicorn
 email_validator
+plotly

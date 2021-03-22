@@ -5,6 +5,7 @@ from markupsafe import escape
 from dbms import DB, User
 from forms import RegistrationForm, LoginForm, AccountForm, PostForm, ResetForm1, ResetForm2
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
+from grapher import create_plot, create_heatmap
 
 db = DB('site.db')
 
@@ -26,7 +27,9 @@ def load_user(username):
 @app.route('/home')
 @login_required
 def home():
-    return render_template('home.html', posts=db.get_posts(), title='Home')
+    bar = create_plot()
+    heatmap = create_heatmap()
+    return render_template('home.html', posts=db.get_posts(), title='Home', plot=bar, heatmap=heatmap)
 
 
 @app.route('/')
@@ -41,7 +44,8 @@ def news_page():
 @app.route('/buyandsell')
 @login_required
 def buyandsell_page():
-    return render_template('buyandsell.html')
+    heatmap = create_heatmap()
+    return render_template('buyandsell.html', heatmap=heatmap)
 
 
 @app.route('/register', methods=['GET', 'POST'])

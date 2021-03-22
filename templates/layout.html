@@ -8,7 +8,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- Other CSS -->
+    <script src="https://use.fontawesome.com/5892b18364.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
     {% if title %}
         <title>AgriHero - {{ title }}</title>
@@ -67,7 +73,8 @@
         <div class="col-md-4">
           <div class="content-section">
             <h3>Quick Access</h3>
-            <p class='text-muted'>You can put any information here you'd like.
+            <iframe src="https://www.meteoblue.com/en/weather/widget/daily/vellore_india_1253286?geoloc=fixed&days=4&tempunit=CELSIUS&windunit=KILOMETER_PER_HOUR&precipunit=MILLIMETER&coloured=coloured&pictoicon=0&pictoicon=1&maxtemperature=0&maxtemperature=1&mintemperature=0&mintemperature=1&windspeed=0&windspeed=1&windgust=0&winddirection=0&winddirection=1&uv=0&humidity=0&precipitation=0&precipitation=1&precipitationprobability=0&precipitationprobability=1&spot=0&spot=1&pressure=0&layout=light"  frameborder="0" scrolling="NO" allowtransparency="true" sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox" style="width: 20vw; height: 47vh;"></iframe>
+            <p class='text-muted'>
               <ul class="list-group">
                 <li class="list-group-item list-group-item-light">Latest Posts</li>
                 <li class="list-group-item list-group-item-light">Announcements</li>
@@ -75,7 +82,16 @@
                 <li class="list-group-item list-group-item-light">etc</li>
               </ul>
             </p>
+            <div class="chart" id="heatmap">
+              <script>
+                var graphs = {{heatmap | safe}};
+                Plotly.plot('heatmap',graphs,{});
+              </script>
+            </div>
           </div>
+        </div>
+        <div class="col-md-4">
+
         </div>
       </div>
     </main>

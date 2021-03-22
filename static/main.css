@@ -12,10 +12,6 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #5f788a;
 }
 
-.site-header .navbar-nav .nav-link {
-  color: #cbd5db;
-}
-
 .site-header .navbar-nav .nav-link:hover {
   color: #ffffff;
 }
@@ -79,17 +75,17 @@ a.article-title:hover {
   font-size: 2.5rem;
 }
 
-.services-section .service-item {
-	background-color: #f7f7f7;
+.service-item {
+	background-color: #e6e6e6;
 	border-radius: 5px;
 	padding: 50px 40px;
 	text-align: center;
 	margin-bottom: 30px;
 }
-.services-page .service-item {
+.service-item {
 	margin-bottom: 30px;
 }
-.services-section .service-item i {
+.service-item i {
 	color: #fff;
 	background-color: #00bcd4;
 	display: inline-block;
@@ -100,7 +96,7 @@ a.article-title:hover {
 	border-radius: 50%;
 	font-size: 32px;
 }
-.services-section .service-item h4 {
+.service-item h4 {
 	margin-top: 35px;
 	font-size: 19px;
 	color: #1e1e1e;
@@ -110,3 +106,11 @@ a.article-title:hover {
 	margin-bottom: 30px;
 }
 
+.service-item p {
+	font-size: 1rem;
+	color: #1e1e1e;
+	text-transform: capitalize;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+	margin-bottom: 30px;
+}
