@@ -16,3 +16,5 @@ WTForms
 gunicorn
 email_validator
 plotly
+pandas
+numpy
