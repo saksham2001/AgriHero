@@ -1,15 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for sensor in sensors %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="user/{{ sensor[0] }}">{{ sensor[0] }}</a>
-              <small class="text-muted">{{ sensor[3] }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ sensor[1] }}</a></h2>
-            <p class="article-content">{{ sensor[2] }}</p>
-          </div>
-        </article>
-    {% endfor %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="user/{{ sensor[0] }}">Source</a>
+          <small class="text-muted">00/00/2000</small>
+        </div>
+        <h2><a class="article-title" href="#">Headline</a></h2>
+        <p class="article-content">Content</p>
+      </div>
+    </article>
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="user/{{ sensor[0] }}">Source</a>
+          <small class="text-muted">00/00/2000</small>
+        </div>
+        <h2><a class="article-title" href="#">Headline</a></h2>
+        <p class="article-content">Content</p>
+      </div>
+    </article>
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="user/{{ sensor[0] }}">Source</a>
+          <small class="text-muted">00/00/2000</small>
+        </div>
+        <h2><a class="article-title" href="#">Headline</a></h2>
+        <p class="article-content">Content</p>
+      </div>
+    </article>
 {% endblock content%}

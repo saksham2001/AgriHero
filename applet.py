@@ -45,7 +45,7 @@ def about_page():
 
 @app.route('/news')
 def news_page():
-    return render_template('news.html', sensors=db.get_sensor())
+    return render_template('news.html')
 
 @app.route('/buyandsell')
 @login_required
