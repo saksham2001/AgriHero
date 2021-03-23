@@ -281,7 +281,7 @@ class SensorData(Resource):
         except:
             return {'An error occurred while inserting the item'}, 500
 
-        data_inst = {'u_id': data['u_id'], 'time': data['time'], 'date': data['time'], 'temperature': data['temperature'],
+        data_inst = {'u_id': data['u_id'], 'time': data['time'], 'date': data['date'], 'temperature': data['temperature'],
                      'humidity': data['humidity'], 'av_soil_humidity': data['av_soil_humidity'], 'rain': data['rain'],
                      'wind_speed': data['wind_speed'], 'camera_analysis': data['camera_analysis'],
                      'water_status': data['water_status'], 'gas': data['gas'], 'status': data['status'],
