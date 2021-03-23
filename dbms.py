@@ -170,7 +170,7 @@ class DB:
                             JOIN sensors
                             ON users.id=sensors.u_id
                             WHERE users.username=?
-                            ORDER BY time DESC''', (username,))
+                            ORDER BY date DESC, time DESC''', (username,))
         sensor = c.fetchall()
         c.close()
         conn.close()
