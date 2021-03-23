@@ -1,8 +1,9 @@
 import os
 import secrets
 from flask import Flask, render_template, url_for, flash, redirect, request
+from flask_restful import Api
 from markupsafe import escape
-from dbms import DB, User
+from dbms import DB, User, SensorData
 from forms import RegistrationForm, LoginForm, AccountForm, PostForm, ResetForm1, ResetForm2
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
 from grapher import create_plot, create_heatmap
@@ -13,6 +14,8 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'saksham2001'
 
+api = Api(app)
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
@@ -22,6 +25,9 @@ login_manager.login_message_category = 'info'
 def load_user(username):
     user = User(username)
     return user
+
+
+api.add_resource(SensorData, '/update/<string:username>')
 
 
 @app.route('/home')
@@ -149,6 +155,5 @@ def user_page(username):
 #     form = ResetForm2()
 
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)

@@ -1,7 +1,9 @@
 import sqlite3
 import bcrypt
 from datetime import datetime
+from flask import jsonify
 from flask_login import UserMixin
+from flask_restful import Resource, reqparse
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
@@ -65,7 +67,7 @@ class DB:
                    rain, wind, cam, water_status, gas, status):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
-        dt_object = datetime.utcnow()
+        dt_object = datetime.strptime(date, '%d/%m/%y')
         if dt_object.month < 10:
             date = str(dt_object.year) + '-' + '0' + str(dt_object.month) + '-' + str(dt_object.day)
         else:
@@ -73,7 +75,20 @@ class DB:
         data = (user_id, time, date, temp, humid, avg_soil_humid,
                 rain, wind, cam, water_status, gas, status)
         c.execute('''INSERT INTO sensors (u_id, time, date, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, status)
-                        VALUES (?, ?, ?, ?)''', data)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
+        conn.commit()
+        c.close()
+        conn.close()
+
+    @classmethod
+    def add_sensor_api(cls, user_id, time, date, temp, humid, avg_soil_humid,
+                       rain, wind, cam, water_status, gas, status):
+        conn = sqlite3.connect('site.db')
+        c = conn.cursor()
+        data = (user_id, time, date, temp, humid, avg_soil_humid,
+                rain, wind, cam, water_status, gas, status)
+        c.execute('''INSERT INTO sensors (u_id, time, date, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
         conn.commit()
         c.close()
         conn.close()
@@ -238,3 +253,38 @@ class User(UserMixin):
         except:
             return None
         return user_id
+
+
+class SensorData(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('u_id', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('time', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('date', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('temperature', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('humidity', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('av_soil_humidity', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('rain', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('wind_speed', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('camera_analysis', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('water_status', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('gas', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('status', type=str, required=True, help='this field cannot be left blank')
+
+    def post(self, username):
+
+        data = SensorData.parser.parse_args()
+
+        try:
+            DB.add_sensor_api(data['u_id'], data['time'], data['date'], data['temperature'], data['humidity'],
+                              data['av_soil_humidity'], data['rain'], data['wind_speed'], data['camera_analysis'],
+                              data['water_status'], data['gas'], data['status'])
+        except:
+            return {'An error occurred while inserting the item'}, 500
+
+        data_inst = {'u_id': data['u_id'], 'time': data['time'], 'date': data['time'], 'temperature': data['temperature'],
+                     'humidity': data['humidity'], 'av_soil_humidity': data['av_soil_humidity'], 'rain': data['rain'],
+                     'wind_speed': data['wind_speed'], 'camera_analysis': data['camera_analysis'],
+                     'water_status': data['water_status'], 'gas': data['gas'], 'status': data['status'],
+                     'username': username}
+
+        return data_inst, 201
