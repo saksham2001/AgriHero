@@ -140,7 +140,7 @@ class DB:
                             FROM users
                             JOIN sensors
                             ON users.id=sensors.u_id
-                            ORDER BY time DESC
+                            ORDER BY date DESC, time DESC
                             LIMIT 1''')
         else:
             c.execute('''SELECT sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
