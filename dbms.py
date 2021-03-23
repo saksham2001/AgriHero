@@ -21,15 +21,23 @@ class DB:
         conn.commit()
         conn.close()
 
-    def create_posts_table(self):
+    def create_sensor_table(self):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
-        c.execute('''CREATE TABLE posts 
+        c.execute('''CREATE TABLE sensors 
                                 (id integer PRIMARY KEY,
-                                title text NOT NULL,
-                                content text NOT NULL,
+                                u_id integer,
+                                time time NOT NULL,
                                 date date NOT NULL,
-                                u_id integer)''')
+                                temperature text NOT NULL,
+                                humidity text NOT NULL,
+                                avg_soil_humidity text NOT NULL,
+                                rain text NOT NULL,
+                                wind_speed text NOT NULL,
+                                camera_analysis text NOT NULL,
+                                water_status text NOT NULL,
+                                gas text NOT NULL,
+                                status text NOT NULL)''')
         conn.commit()
         c.close()
         conn.close()
@@ -53,7 +61,8 @@ class DB:
             conn.close()
             return False
 
-    def add_post(self, user_id, title, content):
+    def add_sensor(self, user_id, time, date, temp, humid, avg_soil_humid,
+                   rain, wind, cam, water_status, gas, status):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
         dt_object = datetime.utcnow()
@@ -61,8 +70,9 @@ class DB:
             date = str(dt_object.year) + '-' + '0' + str(dt_object.month) + '-' + str(dt_object.day)
         else:
             date = str(dt_object.year) + '-' + str(dt_object.month) + '-' + str(dt_object.day)
-        data = (title, content, date, user_id)
-        c.execute('''INSERT INTO posts (title, content, date, u_id)
+        data = (user_id, time, date, temp, humid, avg_soil_humid,
+                rain, wind, cam, water_status, gas, status)
+        c.execute('''INSERT INTO sensors (u_id, time, date, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, status)
                         VALUES (?, ?, ?, ?)''', data)
         conn.commit()
         c.close()
@@ -107,26 +117,49 @@ class DB:
         conn.close()
         return bcrypt.checkpw(password.encode('utf-8'), hashed_pd)
 
-    def get_posts(self, username=None):
+    def get_sensor(self, username=None):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
         if username is None:
-            c.execute('''SELECT users.username, posts.title, posts.content, posts.date
+            c.execute('''SELECT users.username, sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
                             FROM users
-                            JOIN posts
-                            ON users.id=posts.u_id
-                            ORDER BY date DESC''')
+                            JOIN sensors
+                            ON users.id=sensors.u_id
+                            ORDER BY time DESC
+                            LIMIT 1''')
         else:
-            c.execute('''SELECT posts.title, posts.content, posts.date
+            c.execute('''SELECT sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
                             FROM users
-                            JOIN posts
-                            ON users.id=posts.u_id
+                            JOIN sensors
+                            ON users.id=sensors.u_id
                             WHERE users.username=?
-                            ORDER BY date DESC''', (username, ))
-        posts = c.fetchall()
+                            ORDER BY time DESC
+                            LIMIT 1''', (username,))
+        sensor = c.fetchall()
         c.close()
         conn.close()
-        return posts
+        return sensor[0]
+
+    def get_sensor_all(self, username=None):
+        conn = sqlite3.connect(self.db_name)
+        c = conn.cursor()
+        if username is None:
+            c.execute('''SELECT users.username, sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+                            FROM users
+                            JOIN sensors
+                            ON users.id=sensors.u_id
+                            ORDER BY time DESC''')
+        else:
+            c.execute('''SELECT sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+                            FROM users
+                            JOIN sensors
+                            ON users.id=sensors.u_id
+                            WHERE users.username=?
+                            ORDER BY time DESC''', (username,))
+        sensor = c.fetchall()
+        c.close()
+        conn.close()
+        return sensor
 
     def update_picture(self, picture, username):
         conn = sqlite3.connect(self.db_name)
@@ -189,9 +222,9 @@ class User(UserMixin):
         self.user_id = db.get_id(self.username)
         self.image = db.get_image(self.username)
 
-    def get_posts(self):
+    def get_sensors_all(self):
         db = DB('site.db')
-        return db.get_posts(self.username)
+        return db.get_sensor_all(self.username)
 
     def reset_pass(self):
         s = Serializer('saksham2001', 1800)

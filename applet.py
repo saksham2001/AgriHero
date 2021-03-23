@@ -29,7 +29,7 @@ def load_user(username):
 def home():
     bar = create_plot()
     heatmap = create_heatmap()
-    return render_template('home.html', posts=db.get_posts(), title='Home', plot=bar, heatmap=heatmap)
+    return render_template('home.html', sensors=db.get_sensor(), title='Home', plot=bar, heatmap=heatmap)
 
 
 @app.route('/')
@@ -39,7 +39,7 @@ def about_page():
 
 @app.route('/news')
 def news_page():
-    return render_template('news.html', posts=db.get_posts())
+    return render_template('news.html', sensors=db.get_sensor())
 
 @app.route('/buyandsell')
 @login_required
@@ -114,7 +114,7 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         flash('Your Post has been Posted!', 'success')
-        db.add_post(current_user.user_id, form.title.data, form.content.data)
+        db.add_sensor(current_user.user_id, form.title.data, form.content.data)
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form)
 
@@ -122,12 +122,12 @@ def new_post():
 @app.route('/user/<username>')
 @login_required
 def user_page(username):
-    posts = db.get_posts(username=username)
-    if len(posts) == 0:
+    sensors = db.get_sensor(username=username)
+    if len(sensors) == 0:
         flash('User Does not Exists!', 'danger')
         return redirect(url_for('home'))
     else:
-        return render_template('user.html', posts=posts, title='Home', username=escape(username))
+        return render_template('user.html', sensors=sensors, title='Home', username=escape(username))
 
 
 # @app.route('/reset-password-username')
@@ -150,5 +150,5 @@ def user_page(username):
 
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-
         <div class="content-section">
           <div class="media">
             <img class="rounded-circle account-img" src="{{ image_file }}">
@@ -29,15 +28,15 @@
             </form>
         </div>
         <div class="'content-senction">
-            {% for post in current_user.get_posts() %}
+            {% for sensor in current_user.get_sensors_all() %}
             <article class="media content-section">
               <div class="media-body">
                 <div class="article-metadata">
                   <a class="mr-2" href="#">{{ current_user.username }}</a>
-                  <small class="text-muted">{{ post[2] }}</small>
+                  <small class="text-muted">{{ sensor[1] }}</small>
                 </div>
-                <h2><a class="article-title" href="#">{{ post[0] }}</a></h2>
-                <p class="article-content">{{ post[1] }}</p>
+                <h2><a class="article-title" href="#">{{ sensor[0] }} IST (GMT+5:30)</a></h2>
+                <p class="article-content">{{ sensor }}</p>
               </div>
             </article>
             {% endfor %}
