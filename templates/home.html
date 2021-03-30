@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="col-xl">
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-thermometer-full "></i>
+            <h4>Temperature</h4>
+            <p>{{ sensors[3] }} °C</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-tint"></i>
+            <h4>Humidity</h4>
+            <p>{{ sensors[4] }} %</p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-leaf"></i>
+            <h4>Average Soil Humidity</h4>
+            <p>{{ sensors[5] }} %</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-cloud "></i>
+            <h4>Rain Probability</h4>
+            <p>{{ sensors[6] }} %</p>
+          </div>
+        </div>
+      </div>
+      <div class="row flex-nowrap align-items-center">
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-flag-checkered"></i>
+            <h4>Wind Speed</h4>
+            <p>{{ sensors[7] }} m/s</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="service-item">
+            <i class="fa fa-camera"></i>
+            <h4>Camera Analysis</h4>
+            <p>{{ sensors[8] }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      setTimeout(function(){ location.reload(); }, 50000);
+    </script>
+{% endblock content%}
