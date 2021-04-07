@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-     <!-- ***** Fleet Starts ***** -->
      <section class="section" id="trainers">
       <div class="container">
           <br>
@@ -11,18 +10,15 @@
                           <div class="image-thumb">
                             <img src="{{ url_for('static', filename='bs_images/' + listing[7]) }}" alt="Product Image">
                           </div>
-                          <div class="down-content">
-                              <span>
-                                  <sup>&#8377</sup>{{ listing[4] }}
+                          <div class="down-content" style="text-align: center;">
+                              {% set unit = listing[6].split() %}
+                              <span style="text-transform: lowercase;">
+                                  <sup>&#8377</sup>{{ listing[4] }}  /{{ unit[-1] }}
                               </span>
-
                               <h4 style="text-transform: uppercase;">{{ listing[3] }}</h4>
-
-                              <p>{{ listing[5] }}</p>
-
-                              <ul class="social-icons">
-                                  <li><a href="{{ url_for('buy_page') }}/{{ listing[0] }}">+ Order</a></li>
-                              </ul>
+                              <h5><i class="fa fa-map-marker"></i> {{ listing[8] }}</h5>
+                              <p>AgriHero Verified &#10004;</p>
+                              <button type="button" class="btn btn-outline-success" onclick="window.location.href='{{ url_for('buy_page') }}/{{ listing[0] }}'">Order</button>
                           </div>
                       </div>
                   </div>
