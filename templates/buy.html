@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block content %}
+     <!-- ***** Fleet Starts ***** -->
+     <section class="section" id="trainers">
+      <div class="container">
+          <br>
+          <div class="row">
+              {% for listing in buy_listings %}
+                  <div class="col-lg-4">
+                      <div class="trainer-item">
+                          <div class="image-thumb">
+                            <img src="{{ url_for('static', filename='bs_images/' + listing[7]) }}" alt="Product Image">
+                          </div>
+                          <div class="down-content">
+                              <span>
+                                  <sup>&#8377</sup>{{ listing[4] }}
+                              </span>
+
+                              <h4 style="text-transform: uppercase;">{{ listing[3] }}</h4>
+
+                              <p>{{ listing[5] }}</p>
+
+                              <ul class="social-icons">
+                                  <li><a href="{{ url_for('buy_page') }}/{{ listing[0] }}">+ Order</a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              {% endfor %}
+          </div>
+
+          <br>
+
+          <nav>
+            <ul class="pagination pagination-lg justify-content-center">
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item"><a class="page-link" href="buy.html">1</a></li>
+              <li class="page-item"><a class="page-link" href="buy.html">2</a></li>
+              <li class="page-item"><a class="page-link" href="buy.html">3</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+      </div>
+  </section>
+  <script>
+      setTimeout(function(){ location.reload(); }, 50000);
+  </script>
+{% endblock content%}
+
+
+
+
+
+
+
+

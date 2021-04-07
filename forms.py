@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError, DecimalField, RadioField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from dbms import DB
 
@@ -41,7 +41,7 @@ class LoginForm(FlaskForm):
 
 class AccountForm(FlaskForm):
 
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
 
     submit = SubmitField('Submit')
 
@@ -75,7 +75,37 @@ class ResetForm2(FlaskForm):
 
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
 
-    submit = StringField('Reset')
+    submit = SubmitField('Reset')
+
+
+class BuyorSellForm(FlaskForm):
+
+    buyorsell = SelectField('What are you interested in?', choices=[('buying', 'Buying'), ('selling', 'Selling')],
+                            validators=[DataRequired()])
+
+    submit = SubmitField('Go')
+
+
+class SellForm(FlaskForm):
+
+    name = StringField('Name', validators=[DataRequired()])
+
+    image = FileField('Upload Picture of the Crop', validators=[FileAllowed(['jpg', 'png', 'jpeg']), FileRequired('File was empty!')])
+
+    price = DecimalField('Price', validators=[DataRequired()])
+
+    units = RadioField('Units', choices=['per Ton', 'per Quintal', 'per Kilogram', 'per Gram'],
+                       validators=[DataRequired()])
+
+    info = TextAreaField('Information', validators=[DataRequired(), Length(min=2, max=200)])
+
+    location = StringField('Location', validators=[DataRequired()])
+
+    verified = BooleanField('AgriHero Verified')
+
+    negotiable = BooleanField('Negotiable Price')
+
+    submit = SubmitField('List to Sell')
 
 
 
