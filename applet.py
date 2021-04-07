@@ -117,6 +117,11 @@ def sell_page():
     return render_template('sell.html', title='Sell', form=form, heatmap=heatmap)
 
 
+@app.route('/thankyou')
+def thankyou_page():
+    return render_template('thankyou.html')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
