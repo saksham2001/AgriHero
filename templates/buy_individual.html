@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+     <!-- ***** Fleet Starts ***** -->
+     <section class="section" id="trainers">
+      <div class="container">
+          <br>
+          <div class="row">
+              <div class="col-lg-4">
+                  <div class="trainer-item">
+                      <div class="image-thumb">
+                        <img src="{{ url_for('static', filename='bs_images/' + listing[6]) }}" alt="Product Image">
+                      </div>
+                      <div class="down-content">
+                          <span>
+                              <sup>&#8377</sup>{{ listing[3] }}
+                          </span>
+
+                          <h4 style="text-transform: uppercase;">{{ listing[2] }}</h4>
+
+                          <p>{{ listing[4] }}</p>
+
+                          <ul class="social-icons">
+                              <li><a href="product-details.html">+ Order</a></li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <br>
+      </div>
+  </section>
+  <script>
+      setTimeout(function(){ location.reload(); }, 50000);
+  </script>
+{% endblock content%}
+
+
+
+
+
+
+
+

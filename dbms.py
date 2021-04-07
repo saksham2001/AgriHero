@@ -1,7 +1,6 @@
 import sqlite3
 import bcrypt
 from datetime import datetime
-from flask import jsonify
 from flask_login import UserMixin
 from flask_restful import Resource, reqparse
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -29,8 +28,7 @@ class DB:
         c.execute('''CREATE TABLE sensors 
                                 (id integer PRIMARY KEY,
                                 u_id integer,
-                                time time NOT NULL,
-                                date date NOT NULL,
+                                datetime smalldatetime NOT NULL,
                                 temperature text NOT NULL,
                                 humidity text NOT NULL,
                                 avg_soil_humidity text NOT NULL,
@@ -39,7 +37,27 @@ class DB:
                                 camera_analysis text NOT NULL,
                                 water_status text NOT NULL,
                                 gas text NOT NULL,
+                                color text NOT NULL,
                                 status text NOT NULL)''')
+        conn.commit()
+        c.close()
+        conn.close()
+
+    def create_listings_table(self):
+        conn = sqlite3.connect(self.db_name)
+        c = conn.cursor()
+        c.execute('''CREATE TABLE listings 
+                                (id integer PRIMARY KEY,
+                                u_id integer,
+                                datetime smalldatetime NOT NULL,
+                                name text NOT NULL,
+                                price real NOT NULL,
+                                units text NOT NULL,
+                                info text NOT NULL,
+                                image_name text NOT NULL,
+                                location text NOT NULL,
+                                verified text NOT NULL,
+                                negotiable text NOT NULL)''')
         conn.commit()
         c.close()
         conn.close()
@@ -64,17 +82,14 @@ class DB:
             return False
 
     def add_sensor(self, user_id, time, date, temp, humid, avg_soil_humid,
-                   rain, wind, cam, water_status, gas, status):
+                   rain, wind, cam, water_status, gas, color, status):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
-        dt_object = datetime.strptime(date, '%d/%m/%y')
-        if dt_object.month < 10:
-            date = str(dt_object.year) + '-' + '0' + str(dt_object.month) + '-' + str(dt_object.day)
-        else:
-            date = str(dt_object.year) + '-' + str(dt_object.month) + '-' + str(dt_object.day)
-        data = (user_id, time, date, temp, humid, avg_soil_humid,
-                rain, wind, cam, water_status, gas, status)
-        c.execute('''INSERT INTO sensors (u_id, time, date, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, status)
+        dt_object = datetime.strptime(date+' '+time, '%d/%m/%y %H:%M:%S')
+
+        data = (user_id, dt_object.strftime('%d/%m/%y %H:%M:%S'), temp, humid, avg_soil_humid,
+                rain, wind, cam, water_status, gas, color, status)
+        c.execute('''INSERT INTO sensors (u_id, datetime, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, color, status)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
         conn.commit()
         c.close()
@@ -82,16 +97,33 @@ class DB:
 
     @classmethod
     def add_sensor_api(cls, user_id, time, date, temp, humid, avg_soil_humid,
-                       rain, wind, cam, water_status, gas, status):
+                       rain, wind, cam, water_status, gas, color, status):
+        dt_object = datetime.strptime(date + ' ' + time, '%d/%m/%y %H:%M:%S')
         conn = sqlite3.connect('site.db')
         c = conn.cursor()
-        data = (user_id, time, date, temp, humid, avg_soil_humid,
-                rain, wind, cam, water_status, gas, status)
-        c.execute('''INSERT INTO sensors (u_id, time, date, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, status)
+        data = (user_id, dt_object.strftime('%d/%m/%y %H:%M:%S'), temp, humid, avg_soil_humid,
+                rain, wind, cam, water_status, gas, color, status)
+        c.execute('''INSERT INTO sensors (u_id, datetime, temperature, humidity, avg_soil_humidity, rain, wind_speed, camera_analysis, water_status, gas, color, status)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
         conn.commit()
         c.close()
         conn.close()
+
+    @classmethod
+    def add_listing(cls, user_id, time, date, name, price, units, info, image_name, location, verified, negotiable):
+        dt_object = datetime.strptime(date + ' ' + time, '%d/%m/%y %H:%M:%S')
+
+        conn = sqlite3.connect('site.db')
+        c = conn.cursor()
+        data = (user_id, dt_object.strftime('%d/%m/%y %H:%M:%S'), name, price, info, units, image_name, location, verified, negotiable)
+
+        c.execute('''INSERT INTO listings (u_id, datetime, name, price, units, info, image_name, location, verified, negotiable)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
+        conn.commit()
+        c.close()
+        conn.close()
+
+        return True
 
     def is_email(self, email):
         conn = sqlite3.connect(self.db_name)
@@ -136,19 +168,19 @@ class DB:
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
         if username is None:
-            c.execute('''SELECT users.username, sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+            c.execute('''SELECT users.username, sensors.datetime, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.color, sensors.status
                             FROM users
                             JOIN sensors
                             ON users.id=sensors.u_id
-                            ORDER BY date DESC, time DESC
+                            ORDER BY datetime DESC
                             LIMIT 1''')
         else:
-            c.execute('''SELECT sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+            c.execute('''SELECT sensors.datetime, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.color, sensors.status
                             FROM users
                             JOIN sensors
                             ON users.id=sensors.u_id
                             WHERE users.username=?
-                            ORDER BY date DESC, time DESC
+                            ORDER BY datetime DESC
                             LIMIT 1''', (username,))
         sensor = c.fetchall()
         c.close()
@@ -159,22 +191,44 @@ class DB:
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
         if username is None:
-            c.execute('''SELECT users.username, sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+            c.execute('''SELECT users.username, sensors.datetime, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.color, sensors.status
                             FROM users
                             JOIN sensors
                             ON users.id=sensors.u_id
-                            ORDER BY date DESC, time DESC''')
+                            ORDER BY datetime DESC''')
         else:
-            c.execute('''SELECT sensors.time, sensors.date, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.status
+            c.execute('''SELECT sensors.datetime, sensors.temperature, sensors.humidity, sensors.avg_soil_humidity, sensors.rain, sensors.wind_speed, sensors.camera_analysis, sensors.water_status, sensors.gas, sensors.color, sensors.status
                             FROM users
                             JOIN sensors
                             ON users.id=sensors.u_id
                             WHERE users.username=?
-                            ORDER BY date DESC, time DESC''', (username,))
+                            ORDER BY datetime DESC''', (username,))
         sensor = c.fetchall()
         c.close()
         conn.close()
         return sensor
+
+    def get_listing(self, product_id):
+        conn = sqlite3.connect(self.db_name)
+        c = conn.cursor()
+        c.execute('''SELECT listings.u_id, listings.datetime, listings.name, listings.price, listings.units, listings.info, listings.image_name, listings.location, listings.verified, listings.negotiable
+                                FROM listings
+                                WHERE listings.id=?''', (product_id, ))
+        listing = c.fetchall()
+        c.close()
+        conn.close()
+        return listing[0]
+
+    def get_listings_all(self):
+        conn = sqlite3.connect(self.db_name)
+        c = conn.cursor()
+        c.execute('''SELECT listings.id, listings.u_id, listings.datetime, listings.name, listings.price, listings.units, listings.info, listings.image_name, listings.location, listings.verified, listings.negotiable
+                                FROM listings
+                                ORDER BY datetime DESC''')
+        listings = c.fetchall()
+        c.close()
+        conn.close()
+        return listings
 
     def update_picture(self, picture, username):
         conn = sqlite3.connect(self.db_name)
@@ -188,7 +242,7 @@ class DB:
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
         c.execute('''SELECT id FROM users
-                                WHERE username=?''', (username,))
+                        WHERE username=?''', (username,))
         user_id = c.fetchone()[0]
         c.close()
         conn.close()
@@ -225,6 +279,19 @@ class DB:
         conn.commit()
         c.close()
         conn.close()
+
+    def check_product_id(self, product_id):
+        conn = sqlite3.connect(self.db_name)
+        c = conn.cursor()
+        c.execute('''SELECT listings.id 
+                        FROM listings 
+                        WHERE listings.id = ?;''', (product_id,))
+        result = c.fetchone()
+        conn.commit()
+        c.close()
+        conn.close()
+
+        return result
 
 
 class User(UserMixin):
@@ -268,6 +335,7 @@ class SensorData(Resource):
     parser.add_argument('camera_analysis', type=str, required=True, help='this field cannot be left blank')
     parser.add_argument('water_status', type=str, required=True, help='this field cannot be left blank')
     parser.add_argument('gas', type=str, required=True, help='this field cannot be left blank')
+    parser.add_argument('color', type=str, required=True, help='this field cannot be left blank')
     parser.add_argument('status', type=str, required=True, help='this field cannot be left blank')
 
     def post(self, username):
@@ -277,14 +345,14 @@ class SensorData(Resource):
         try:
             DB.add_sensor_api(data['u_id'], data['time'], data['date'], data['temperature'], data['humidity'],
                               data['av_soil_humidity'], data['rain'], data['wind_speed'], data['camera_analysis'],
-                              data['water_status'], data['gas'], data['status'])
+                              data['water_status'], data['gas'], data['color'], data['status'])
         except:
             return {'An error occurred while inserting the item'}, 500
 
         data_inst = {'u_id': data['u_id'], 'time': data['time'], 'date': data['date'], 'temperature': data['temperature'],
                      'humidity': data['humidity'], 'av_soil_humidity': data['av_soil_humidity'], 'rain': data['rain'],
                      'wind_speed': data['wind_speed'], 'camera_analysis': data['camera_analysis'],
-                     'water_status': data['water_status'], 'gas': data['gas'], 'status': data['status'],
-                     'username': username}
+                     'water_status': data['water_status'], 'gas': data['gas'], 'color': data['color'],
+                     'status': data['status'], 'username': username}
 
         return data_inst, 201

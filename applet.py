@@ -1,10 +1,11 @@
 import os
 import secrets
+from datetime import datetime
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_restful import Api
 from markupsafe import escape
 from dbms import DB, User, SensorData
-from forms import RegistrationForm, LoginForm, AccountForm, PostForm, ResetForm1, ResetForm2
+from forms import RegistrationForm, LoginForm, AccountForm, PostForm, ResetForm1, ResetForm2, SellForm, BuyorSellForm
 from flask_login import login_user, LoginManager, logout_user, current_user, login_required
 from grapher import create_plot, create_heatmap
 
@@ -12,7 +13,7 @@ db = DB('site.db')
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'saksham2001'
+app.config['SECRET_KEY'] = 'adminek'
 
 api = Api(app)
 
@@ -43,15 +44,77 @@ def home():
 def about_page():
     return render_template('about.html')
 
+
 @app.route('/news')
 def news_page():
     return render_template('news.html')
 
-@app.route('/buyandsell')
+
+@app.route('/buyandsell', methods=['GET', 'POST'])
 @login_required
 def buyandsell_page():
     heatmap = create_heatmap()
-    return render_template('buyandsell.html', heatmap=heatmap)
+
+    form = BuyorSellForm()
+    if form.validate_on_submit():
+        print('here')
+        print(form.buyorsell.data)
+        if form.buyorsell.data == 'buying':
+            return redirect(url_for('buy_page'))
+        elif form.buyorsell.data == 'selling':
+            return redirect(url_for('sell_page'))
+        else:
+            flash('Choose one of the Options!', category='danger')
+            return redirect(url_for('buyandsell_page'))
+
+    return render_template('buyandsell.html', title='Buy & Sell', heatmap=heatmap, form=form)
+
+
+@app.route('/buy')
+@login_required
+def buy_page():
+    heatmap = create_heatmap()
+
+    return render_template('buy.html', title='Buy', heatmap=heatmap, buy_listings=db.get_listings_all())
+
+
+@app.route('/buy/<product_id>')
+@login_required
+def buy_individual_page(product_id):
+    heatmap = create_heatmap()
+
+    if db.check_product_id(product_id):
+        return render_template('buy_individual.html', heatmap=heatmap, listing=db.get_listing(product_id))
+
+    else:
+        flash('Sorry! The Product does not exist', category='danger')
+        return redirect(url_for('buy_page'))
+
+
+@app.route('/sell', methods=['GET', 'POST'])
+@login_required
+def sell_page():
+    heatmap = create_heatmap()
+    form = SellForm()
+    if form.validate_on_submit():
+        if form.image.data:
+            random_hex = secrets.token_hex(8)
+            _, p_ext = os.path.splitext(form.image.data.filename)
+            p_fn = random_hex + p_ext
+            image_path = os.path.join(app.root_path, 'static/bs_images', p_fn)
+            form.image.data.save(image_path)
+
+            dt = datetime.now()
+
+            if db.add_listing(db.get_id(current_user.username), dt.strftime("%H:%M:%S"), dt.strftime("%m/%d/%y"),
+                              form.name.data, float(form.price.data), form.units.data, form.info.data, p_fn,
+                              form.location.data, 'TRUE' if form.verified.data else 'FALSE', 'TRUE' if form.negotiable.data else 'FALSE'):
+                flash(f'Your Listing has been Successfully Posted!', category='success')
+                return redirect(url_for('home'))
+            else:
+                flash('Sorry, Please Try Again Later', category='danger')
+                return redirect(url_for('sell_page'))
+    return render_template('sell.html', title='Sell', form=form, heatmap=heatmap)
 
 
 @app.route('/register', methods=['GET', 'POST'])

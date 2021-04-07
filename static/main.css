@@ -125,3 +125,58 @@ a.article-title:hover {
     height: 48vh;
 }
 }
+
+#trainers {
+	padding-bottom: 90px;
+  }
+#trainers .trainer-item {
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+	padding: 15px;
+	margin-bottom: 30px;
+}
+
+#trainers .trainer-item img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+#trainers .trainer-item span {
+    font-size: 20px;
+    font-weight: 500;
+    color: #14a307;
+    display: inline-block;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+#trainers .trainer-item h4 {
+    font-size: 25px;
+    font-weight: 600;
+    color: #232d39;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+}
+
+#trainers .trainer-item p {
+    margin-bottom: 20px;
+}
+
+ul.social-icons li {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+ul.social-icons li:last-child {
+    margin-right: 0px;
+}
+
+ul.social-icons li a {
+    color: #232d39;
+    transition: all .3s;
+}
+
+ul.social-icons li a:hover {
+    color: #ed563b;
+}
