@@ -251,9 +251,12 @@ class DB:
     def get_email(self, username):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
-        c.execute('''SELECT email FROM users
-                                WHERE username=?''', (username,))
-        email = c.fetchone()[0]
+        try:
+            c.execute('''SELECT email FROM users
+                                    WHERE username=?''', (username,))
+            email = c.fetchone()[0]
+        except:
+            pass
         c.close()
         conn.close()
         return email
