@@ -128,7 +128,8 @@ a.article-title:hover {
 
 #trainers {
 	padding-bottom: 90px;
-  }
+}
+
 #trainers .trainer-item {
 	background-color: #fff;
 	border-radius: 5px;
@@ -140,6 +141,7 @@ a.article-title:hover {
 #trainers .trainer-item img {
     width: 100%;
     border-radius: 5px;
+    height: 17vh;
 }
 
 #trainers .trainer-item span {
@@ -165,11 +167,9 @@ a.article-title:hover {
 
 ul.social-icons li {
     display: inline-block;
-    margin-right: 12px;
 }
 
 ul.social-icons li:last-child {
-    margin-right: 0px;
 }
 
 ul.social-icons li a {
