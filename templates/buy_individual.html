@@ -20,16 +20,37 @@
                 </div>
               </div>
               <div class="row">
-                <div class="table-responsive">
-                  <table class="table table-sm table-borderless mb-0" style="margin: 2vw;">
+                <div class="table-responsive" style="padding-bottom: 2vw;">
+                  <table class="table table-sm table-borderless mb-0" style="margin-left: 2vw;">
                     <tbody>
                       <tr>
                         <th class="pl-0 w-25" scope="row"><strong>Quantity</strong></th>
                         <td>50 Quintals</td>
                       </tr>
                       <tr>
-                        <th class="pl-0 w-25" scope="row"><strong>Delivery</strong></th>
+                        <th class="pl-0 w-25" scope="row"><strong>Location</strong></th>
                         <td>{{ listing[7] }}</td>
+                      </tr>
+                      <tr>
+                        <th class="pl-0 w-25" scope="row"><strong>AgriHero Verified</strong></th>
+                        {% if listing[8] == 'TRUE' %}
+                        <td>&#10003;</td>
+                        {% else %}
+                        <td>&#10005;</td>
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        <th class="pl-0 w-25" scope="row"><strong>Price Negotiable</strong></th>
+                        {% if listing[9] == 'TRUE' %}
+                        <td>&#10003;</td>
+                        {% else %}
+                        <td>&#10005;</td>
+                        {% endif %}
+                      </tr>
+                      <tr>
+                        {% set datetime = listing[1].split()  %}
+                        <th class="pl-0 w-25" scope="row"><strong>Date Listed on</strong></th>
+                        <td>{{ datetime[0] }}</td>
                       </tr>
                     </tbody>
                   </table>
