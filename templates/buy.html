@@ -13,11 +13,15 @@
                           <div class="down-content" style="text-align: center;">
                               {% set unit = listing[6].split() %}
                               <span style="text-transform: lowercase;">
-                                  <sup>&#8377</sup>{{ listing[4] }}  /{{ unit[-1] }}
+                                  <sup>&#2713</sup>{{ listing[4] }}  /{{ unit[-1] }}
                               </span>
                               <h4 style="text-transform: uppercase;">{{ listing[3] }}</h4>
                               <h5><i class="fa fa-map-marker"></i> {{ listing[8] }}</h5>
-                              <p>AgriHero Verified &#10004;</p>
+                              {% if listing[9] == 'TRUE' %}
+                              <p>AgriHero Verified &#10003;</p>
+                              {% else %}
+                              <p> AgriHero Verified &#10005;</p>
+                              {% endif %}
                               <button type="button" class="btn btn-outline-success" onclick="window.location.href='{{ url_for('buy_page') }}/{{ listing[0] }}'">Order</button>
                           </div>
                       </div>
