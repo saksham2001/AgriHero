@@ -36,7 +36,8 @@ api.add_resource(SensorData, '/update/<string:username>')
 def home():
     bar = create_plot()
     heatmap = create_heatmap()
-    return render_template('home.html', sensors=db.get_sensor(), title='Home', plot=bar, heatmap=heatmap)
+    return render_template('home.html', sensors=db.get_sensor(), title='Home', plot=bar, heatmap=heatmap,
+                           alerts=db.get_sensor())
 
 
 @app.route('/')
@@ -46,8 +47,11 @@ def about_page():
 
 
 @app.route('/news')
+@login_required
 def news_page():
-    return render_template('news.html')
+    heatmap = create_heatmap()
+
+    return render_template('news.html', heatmap=heatmap, alerts=db.get_sensor())
 
 
 @app.route('/buyandsell', methods=['GET', 'POST'])
@@ -67,7 +71,7 @@ def buyandsell_page():
             flash('Choose one of the Options!', category='danger')
             return redirect(url_for('buyandsell_page'))
 
-    return render_template('buyandsell.html', title='Buy & Sell', heatmap=heatmap, form=form)
+    return render_template('buyandsell.html', title='Buy & Sell', heatmap=heatmap, form=form, alerts=db.get_sensor())
 
 
 @app.route('/buy')
@@ -75,7 +79,8 @@ def buyandsell_page():
 def buy_page():
     heatmap = create_heatmap()
 
-    return render_template('buy.html', title='Buy', heatmap=heatmap, buy_listings=db.get_listings_all())
+    return render_template('buy.html', title='Buy', heatmap=heatmap, buy_listings=db.get_listings_all(),
+                           alerts=db.get_sensor())
 
 
 @app.route('/buy/<product_id>')
@@ -84,7 +89,8 @@ def buy_individual_page(product_id):
     heatmap = create_heatmap()
 
     if db.check_product_id(product_id):
-        return render_template('buy_individual.html', heatmap=heatmap, listing=db.get_listing(product_id))
+        return render_template('buy_individual.html', heatmap=heatmap, listing=db.get_listing(product_id),
+                               alerts=db.get_sensor())
 
     else:
         flash('Sorry! The Product does not exist', category='danger')
@@ -114,12 +120,14 @@ def sell_page():
             else:
                 flash('Sorry, Please Try Again Later', category='danger')
                 return redirect(url_for('sell_page'))
-    return render_template('sell.html', title='Sell', form=form, heatmap=heatmap)
+    return render_template('sell.html', title='Sell', form=form, heatmap=heatmap, alerts=db.get_sensor())
 
 
 @app.route('/thankyou')
 def thankyou_page():
-    return render_template('thankyou.html')
+    heatmap = create_heatmap()
+
+    return render_template('thankyou.html', heatmap=heatmap, alerts=db.get_sensor())
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -134,7 +142,7 @@ def register():
         else:
             flash('Sorry, Account already exists!', category='danger')
             return redirect(url_for('register'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register', form=form, alerts=db.get_dummy_data())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -154,18 +162,20 @@ def login():
                 return redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form, alerts=db.get_dummy_data())
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('about_page'))
 
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
+    heatmap = create_heatmap()
+
     img = url_for('static', filename='profile_pics/' + current_user.image)
     form = AccountForm()
     if form.validate_on_submit():
@@ -179,29 +189,8 @@ def account():
             current_user.image = p_fn
             flash('Picture Successfully Updated', 'success')
             return redirect(url_for('account'))
-    return render_template('account.html', title='Account', form=form, image_file=img)
-
-
-@app.route('/post/new', methods=['GET', 'POST'])
-@login_required
-def new_post():
-    form = PostForm()
-    if form.validate_on_submit():
-        flash('Your Post has been Posted!', 'success')
-        db.add_sensor(current_user.user_id, form.title.data, form.content.data)
-        return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post', form=form)
-
-
-@app.route('/user/<username>')
-@login_required
-def user_page(username):
-    sensors = db.get_sensor(username=username)
-    if len(sensors) == 0:
-        flash('User Does not Exists!', 'danger')
-        return redirect(url_for('home'))
-    else:
-        return render_template('user.html', sensors=sensors, title='Home', username=escape(username))
+    return render_template('account.html', title='Account', form=form, image_file=img, heatmap=heatmap,
+                           alerts=db.get_sensor())
 
 
 # @app.route('/reset-password-username')
