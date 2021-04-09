@@ -208,6 +208,9 @@ class DB:
         conn.close()
         return sensor
 
+    def get_dummy_data(self):
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "0"]
+
     def get_listing(self, product_id):
         conn = sqlite3.connect(self.db_name)
         c = conn.cursor()
