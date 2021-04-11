@@ -40,13 +40,13 @@
           {% set soil_humidity = sensors[4] | int %}
           {% if (soil_humidity >= 20) %}
             <div class="service-item" style="background-color: #e6e6e6;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-leaf"></i>
               <h4>Average Soil Humidity</h4>
               <p>{{ sensors[4] }} %</p>
             </div>
           {% else %}
             <div class="service-item" style="background-color: #ffb3b3;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-leaf"></i>
               <h4>Average Soil Humidity</h4>
               <p>{{ sensors[4] }} %</p>
             </div>
@@ -56,13 +56,13 @@
           {% set rain = sensors[5] | int %}
           {% if (rain <= 70) %}
             <div class="service-item" style="background-color: #e6e6e6;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-cloud"></i>
               <h4>Rain Probability</h4>
               <p>{{ sensors[5] }} %</p>
             </div>
           {% else %}
             <div class="service-item" style="background-color: #ffb3b3;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-cloud"></i>
               <h4>Rain Probability</h4>
               <p>{{ sensors[5] }} %</p>
             </div>
@@ -74,13 +74,13 @@
           {% set wind = sensors[6] | float %}
           {% if (wind <= 5) %}
             <div class="service-item" style="background-color: #e6e6e6;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-flag-checkered"></i>
               <h4>Wind Speed</h4>
               <p>{{ sensors[6] }} m/s</p>
             </div>
           {% else %}
             <div class="service-item" style="background-color: #ffb3b3;">
-              <i class="fa fa-tint"></i>
+              <i class="fa fa-flag-checkered"></i>
               <h4>Wind Speed</h4>
               <p>{{ sensors[6] }} m/s</p>
             </div>
