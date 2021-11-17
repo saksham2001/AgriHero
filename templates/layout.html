@@ -17,11 +17,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
     {% if title %}
-        <title>AgriHero - {{ title }}</title>
-        <link rel = "icon" href = "{{ url_for('static', filename='logo.png') }}" type = "image/x-icon">
+        <title>Farm2Home - {{ title }}</title>
+        <link rel = "icon" href = "{{ url_for('static', filename='F2H.png') }}" type = "image/x-icon">
     {% else %}
-        <title>AgriHero</title>
-        <link rel = "icon" href = "{{ url_for('static', filename='logo.png') }}" type = "image/x-icon">
+        <title>Farm2Home</title>
+        <link rel = "icon" href = "{{ url_for('static', filename='F2H.png') }}" type = "image/x-icon">
     {% endif %}
 </head>
 <body>
@@ -29,8 +29,8 @@
       <nav class="navbar navbar-expand-md navbar-light bg-steel fixed-top " style="background-color: #00cc00;">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">
-              <img src="{{ url_for('static', filename='logo.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
-              AGRIHERO
+              <img src="{{ url_for('static', filename='F2H.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+              FARM2HOME
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
